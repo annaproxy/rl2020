@@ -1,6 +1,6 @@
 # Raging Lunatics 2020
 
-Welcome to the Raging Lunatics repository for the reproducible research assignment for the course Reinforcement Learning at the University of Amsterdam, by Anna Langedijk, Christiaan van der Vlist, David Černy. Here you will find the most recent codebase, progress and schedules.
+Welcome to the Raging Lunatics repository for the reproducible research assignment for the course Reinforcement Learning at the University of Amsterdam, by Anna Langedijk, Christiaan van der Vlist, David Černy and Albert Harkema. Here you will find the most recent codebase, progress and schedules.
 
 ## Schedules
 
