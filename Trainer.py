@@ -33,7 +33,7 @@ class Trainer:
 
         # Init policy
         self.epsilon = args.epsilon
-        self.policy = EpsilonGreedyPolicy(self.model, self.epsilon)
+        self.policy = EpsilonGreedyPolicy(self.model, self.epsilon, self.env.action_space.n, args.epsilon_cap)
 
         # Init memory
         self.memory = ReplayMemory(args.memory)

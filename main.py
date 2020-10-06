@@ -13,7 +13,7 @@ def main(args):
 
     trainer = Trainer(args)
 
-    duration = trainer.train(100)
+    duration = trainer.train(args.episodes)
     print(duration)
 
 
@@ -39,5 +39,9 @@ if __name__ == "__main__":
                         help='discount factor')
     parser.add_argument('--batch_size', type=int, default=64,
                         help='batch size')
+    parser.add_argument('--episodes', type=int, default=100,
+                        help='batch size')
+    parser.add_argument('--epsilon_cap', type=int, default=1000,
+                        help='threhold for epsilon reduction')
     args = parser.parse_args()
     main(args)

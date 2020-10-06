@@ -7,9 +7,11 @@ class EpsilonGreedyPolicy(object):
     """
     A simple epsilon greedy policy.
     """
-    def __init__(self, Q, epsilon):
+    def __init__(self, Q, epsilon, action_space, cap_it):
         self.Q = Q
         self.epsilon = epsilon
+        self.action_space = action_space
+        self.cap_it = cap_it
 
     def sample_action(self, obs):
 
@@ -21,7 +23,7 @@ class EpsilonGreedyPolicy(object):
                 logits = self.Q(torch.tensor(obs).float())
                 action = torch.argmax(logits).item()
         elif policy_choice == 'non-greedy':
-            action = random.choice([0, 1])
+            action = random.choice(list(range(self.action_space)))
         else:
             raise NotImplementedError
 
@@ -30,16 +32,15 @@ class EpsilonGreedyPolicy(object):
     def set_epsilon(self, epsilon):
         self.epsilon = epsilon
 
-    @staticmethod
-    def get_epsilon(it):
+    def get_epsilon(self, it):
         # prob of taking greedy action
         greedy = 0.0
-        if it > 1000:
+        if it > self.cap_it:
             # greedy capped at 0.95
             greedy = 0.95
         else:
             # interpolation betw. 0.0 and 0.95
-            greedy = it * 0.95 / 1000
+            greedy = it * 0.95 / self.cap_it
 
         epsilon = 1.0 - greedy
         return epsilon
