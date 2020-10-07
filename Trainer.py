@@ -21,7 +21,6 @@ class Trainer:
         self.env.seed(args.seed)
 
         # get input and output size from env
-        x = self.env.reset()
         self.env.reset()
         input_size = len(self.env.state)
         output_size = self.env.action_space.n
