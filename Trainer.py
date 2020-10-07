@@ -24,6 +24,8 @@ class Trainer:
         x = self.env.reset()
         self.env.reset()
         input_size = len(self.env.state)
+        if(args.env == 'Acrobot-v1'):
+            input_size = len(x)
         output_size = self.env.action_space.n
 
         # Init  model
@@ -132,5 +134,5 @@ class Trainer:
         """
         q_sp = self.model(next_states)
         maxq, _ = q_sp.max(dim=1, keepdim=True)
-        targets = rewards + discount_factor * maxq * (1 - dones)
+        targets = rewards + discount_factor * maxq * (1 - dones.float())
         return targets
