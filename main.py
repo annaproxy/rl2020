@@ -3,6 +3,8 @@ import numpy as np
 import torch
 import random
 from Trainer import Trainer
+import os
+import matplotlib.pyplot as plt
 
 
 def main(args):
@@ -11,18 +13,23 @@ def main(args):
     random.seed(args.seed)
     np.random.seed(args.seed)
 
+    experiment_directory = f'experiments/{args.env}_h={args.hidden}_seed={args.seed}_ep={args.episodes}_disc={args.discount}'
+    os.makedirs(experiment_directory,
+                exist_ok=True)
+
     trainer = Trainer(args)
 
     duration = trainer.train(args.episodes)
     print(duration)
 
+    np.save(f'{experiment_directory}/ep_durations', duration)
+
+    plt.plot(duration)
+    plt.show()
+
 
 if __name__ == "__main__":
     parser = ArgumentParser()
-    # parser.add_argument('--input', type=int, required=True,
-    #                   help='Specify input size')
-    # parser.add_argument('--output', type=int, required=True,
-    #                   help='Specify output size')
     parser.add_argument('--hidden', type=int, default=128,
                       help='Specify hidden size')
     parser.add_argument('--memory', type=int, default=10000,
@@ -43,5 +50,7 @@ if __name__ == "__main__":
                         help='batch size')
     parser.add_argument('--epsilon_cap', type=int, default=1000,
                         help='threhold for epsilon reduction')
+    parser.add_argument('--max_steps', type=int, default=200,
+                        help='maximum steps per episode')
     args = parser.parse_args()
     main(args)

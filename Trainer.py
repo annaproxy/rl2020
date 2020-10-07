@@ -19,6 +19,7 @@ class Trainer:
         # Set gym environment
         self.env = gym.envs.make(args.env)
         self.env.seed(args.seed)
+        self.env._max_episode_steps = args.max_steps
 
         # get input and output size from env
         self.env.reset()
