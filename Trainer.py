@@ -27,7 +27,16 @@ class Trainer:
 
         # Init  model
         self.model = QNetwork(input_size, output_size, args.hidden)
-        # self.loss_fn = nn.CrossEntropyLoss()
+
+        # Init target model if desired
+        self.use_target_net = args.target
+        if args.target:
+            self.target_net = QNetwork(input_size, output_size, args.hidden)
+            self.target_net.load_state_dict(self.model.state_dict())
+        else:
+            self.target_net = self.model
+
+        # Init optimiser
         self.opt = torch.optim.Adam(self.model.parameters(), lr=args.lr)
 
         # Init policy
@@ -63,10 +72,15 @@ class Trainer:
 
                 if done:
                     if i % 10 == 0:
-                        print("{2} Episode {0} finished after {1} steps"
-                              .format(i, steps, '\033[92m' if steps >= 195 else '\033[99m'))
-                    episode_durations.append(steps)
+                        print(f'Episode {i} finished after {steps}')
+                    #     print("{2} Episode {0} finished after {1} steps"
+                    #           .format(i, steps, '\033[92m' if steps >= 195 else '\033[99m'))
+                    # episode_durations.append(steps)
                     break
+
+            # update target net if used
+            if i % 10 == 0 and self.use_target_net:
+                self.target_net.load_state_dict(self.model.state_dict())
         return episode_durations
 
     def _train_episode(self):
@@ -129,7 +143,7 @@ class Trainer:
         Returns:
             A torch tensor filled with target values. Shape: batch_size x 1.
         """
-        q_sp = self.model(next_states)
+        q_sp = self.target_net(next_states)
         maxq, _ = q_sp.max(dim=1, keepdim=True)
         targets = rewards + discount_factor * maxq * (1 - dones)
         return targets

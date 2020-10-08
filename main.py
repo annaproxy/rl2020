@@ -57,5 +57,7 @@ if __name__ == "__main__":
                         help='threhold for epsilon reduction')
     parser.add_argument('--max_steps', type=int, default=200,
                         help='maximum steps per episode')
+    parser.add_argument('--target', action='store_true',
+                        help='activate target network')
     args = parser.parse_args()
     main(args)
