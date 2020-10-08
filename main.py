@@ -5,6 +5,7 @@ import random
 from Trainer import Trainer
 import os
 import matplotlib.pyplot as plt
+import json
 
 
 def main(args):
@@ -13,7 +14,7 @@ def main(args):
     random.seed(args.seed)
     np.random.seed(args.seed)
 
-    experiment_directory = f'experiments/{args.env}_h={args.hidden}_seed={args.seed}_ep={args.episodes}_disc={args.discount}'
+    experiment_directory = f'experiments/{json.dumps(vars(args))[1:-1]}'
     os.makedirs(experiment_directory,
                 exist_ok=True)
 
@@ -22,9 +23,13 @@ def main(args):
     duration = trainer.train(args.episodes)
     print(duration)
 
+    # save results
     np.save(f'{experiment_directory}/ep_durations', duration)
 
+    # plot results
     plt.plot(duration)
+    plt.xlabel('Episodes')
+    plt.savefig(f'{experiment_directory}/results.png')
     plt.show()
 
 

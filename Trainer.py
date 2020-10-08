@@ -3,7 +3,6 @@ import torch
 from dqn import QNetwork
 from EpsilonGreedyPolicy import EpsilonGreedyPolicy
 from MemoryReplay import ReplayMemory
-from torch import nn
 import torch.nn.functional as F
 
 
