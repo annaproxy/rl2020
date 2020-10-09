@@ -16,6 +16,8 @@ def main(args):
     np.random.seed(args.seed)
 
     experiment_directory = f'experiments/{json.dumps(vars(args))[1:-1]}'
+    experiment_directory = experiment_directory.replace('"','')
+    experiment_directory = experiment_directory.replace(': ','_')
     os.makedirs(experiment_directory,
                 exist_ok=True)
 
@@ -64,7 +66,7 @@ if __name__ == "__main__":
     parser.add_argument('--target', action='store_true',
                         help='activate target network')
     parser.add_argument('--replay', action='store_true',
-                        help='activate memory replay (according to Anna\'s definition: just sample the latest experiences?')
+                        help='activate experience replay (according to Anna\'s definition: just sample the latest experiences?')
     parser.add_argument('--C', type=int, default=10,
                         help='how many times to save the target network')
     args = parser.parse_args()
