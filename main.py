@@ -2,11 +2,12 @@ from argparse import ArgumentParser
 import numpy as np
 import torch
 import random
-from Trainer import Trainer
 import os
 import matplotlib.pyplot as plt
 import json
 
+from Trainer import Trainer
+from utils import smooth
 
 def main(args):
     # Set seed
@@ -20,14 +21,14 @@ def main(args):
 
     trainer = Trainer(args)
 
-    duration = trainer.train(args.episodes)
+    duration = trainer.train(args.episodes,  args.C)
     print(duration)
 
     # save results
     np.save(f'{experiment_directory}/ep_durations', duration)
 
     # plot results
-    plt.plot(duration)
+    plt.plot(smooth(duration,10))
     plt.xlabel('Episodes')
     plt.savefig(f'{experiment_directory}/results.png')
     plt.show()
@@ -61,5 +62,7 @@ if __name__ == "__main__":
                         help='activate target network')
     parser.add_argument('--replay', action='store_true',
                         help='activate memory replay (according to Anna\'s definition: just sample the latest experiences?')
+    parser.add_argument('--C', type=int, default=10,
+                        help='how many times to save the target network')
     args = parser.parse_args()
     main(args)

@@ -32,8 +32,8 @@ class Trainer:
         # Init target model if desired
         self.use_target_net = args.target
         if args.target:
-            self.target_net = QNetwork(input_size, output_size, args.hidden)
-            self.target_net.load_state_dict(self.model.state_dict()).to(device)
+            self.target_net = QNetwork(input_size, output_size, args.hidden).to(device)
+            self.target_net.load_state_dict(self.model.state_dict())
         else:
             self.target_net = self.model
 
@@ -47,7 +47,7 @@ class Trainer:
         # Init memory
         self.memory = ReplayMemory(args.memory, args.replay)
 
-    def train(self, num_episodes):
+    def train(self, num_episodes, C):
 
         global_steps = 0  # Count the steps (do not reset at episode start, to compute epsilon)
         episode_durations = []  #
@@ -80,7 +80,7 @@ class Trainer:
                     break
 
             # update target net if used
-            if i % 10 == 0 and self.use_target_net:
+            if i % C == 0 and self.use_target_net:
                 self.target_net.load_state_dict(self.model.state_dict())
         return episode_durations
 
