@@ -74,9 +74,7 @@ class Trainer:
                 if done:
                     if i % 10 == 0:
                         print(f'Episode {i} finished after {steps}')
-                    #     print("{2} Episode {0} finished after {1} steps"
-                    #           .format(i, steps, '\033[92m' if steps >= 195 else '\033[99m'))
-                    # episode_durations.append(steps)
+                    episode_durations.append(steps)
                     break
 
             # update target net if used
