@@ -38,10 +38,14 @@ class Trainer:
         self.policy = EpsilonGreedyPolicy(self.model, self.epsilon, self.env.action_space.n, args.epsilon_cap)
 
         # Init memory
-        self.memory = ReplayMemory(args.memory)
+        if(args.replay):
+            self.memory = ReplayMemory(args.memory)
+        else:
+            self.memory = ReplayMemory(1)
+            self.batch_size = 1
 
     def train(self, num_episodes):
-
+            
         global_steps = 0  # Count the steps (do not reset at episode start, to compute epsilon)
         episode_durations = []  #
         for i in range(num_episodes):
