@@ -10,8 +10,8 @@ device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
 class Trainer:
 
     def __init__(self, args):
-        assert args.memory > args.batch_size, 'memory smaller than the batch size!'
-
+        assert args.memory >= args.batch_size, 'memory smaller than the batch size!'
+        self.args = args
         # hyperparams
         self.discount_factor = args.discount
         self.batch_size = args.batch_size
@@ -23,9 +23,9 @@ class Trainer:
 
         # get input and output size from env
         self.env.reset()
-        input_size = len(self.env.state)
-        if(args.env == 'Acrobot-v1'):
-            input_size = len(x)
+        input_size = len(self.env.env.state)
+        #if(args.env == 'Acrobot-v1'):
+        #    input_size = len(x)
         output_size = self.env.action_space.n
 
         # Init  model
@@ -47,9 +47,9 @@ class Trainer:
         self.policy = EpsilonGreedyPolicy(self.model, self.epsilon, self.env.action_space.n, args.epsilon_cap)
 
         # Init memory
-        self.memory = ReplayMemory(args.memory, args.replay)
+        self.memory = ReplayMemory(args.memory)
 
-    def train(self, num_episodes, C):
+    def train(self, num_episodes):
 
         global_steps = 0  # Count the steps (do not reset at episode start, to compute epsilon)
         episode_durations = []  #
@@ -77,10 +77,12 @@ class Trainer:
                     if i % 10 == 0:
                         print(f'Episode {i} finished after {steps}')
                     episode_durations.append(steps)
+                    if i % self.args.save_amt == 0:
+                        torch.save(self.model.state_dict(), f'{self.args.experiment_directory}/models/episode{i}.pt')
                     break
 
             # update target net if used
-            if i % C == 0 and self.use_target_net:
+            if i % self.args.C == 0 and self.use_target_net:
                 self.target_net.load_state_dict(self.model.state_dict())
         return episode_durations
 

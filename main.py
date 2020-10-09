@@ -15,17 +15,24 @@ def main(args):
     random.seed(args.seed)
     np.random.seed(args.seed)
 
-    experiment_directory = f'experiments/{json.dumps(vars(args))[1:-1]}'
-    os.makedirs(experiment_directory,
+    # Initiate NO REPLAY mode 
+    if args.no_replay:
+        args.batch_size = 1
+        args.memory = 1
+
+    args.experiment_directory = f'experiments/{json.dumps(vars(args))[1:-1]}'
+    os.makedirs(args.experiment_directory,
+                exist_ok=True)
+    os.makedirs(args.experiment_directory+'/models/',
                 exist_ok=True)
 
     trainer = Trainer(args)
 
-    duration = trainer.train(args.episodes,  args.C)
+    duration = trainer.train(args.episodes)
     print(duration)
 
     # save results
-    np.save(f'{experiment_directory}/ep_durations', duration)
+    np.save(f'{args.experiment_directory}/ep_durations', duration)
 
     # plot results
     plt.figure(figsize=(20, 10))
@@ -33,7 +40,7 @@ def main(args):
     plt.ylabel('Steps')
     plt.xlabel('Episodes')
     plt.title(f'{args.env}')
-    plt.savefig(f'{experiment_directory}/results.png')
+    plt.savefig(f'{args.experiment_directory}/results.png')
     plt.show()
 
 
@@ -63,9 +70,12 @@ if __name__ == "__main__":
                         help='maximum steps per episode')
     parser.add_argument('--target', action='store_true',
                         help='activate target network')
-    parser.add_argument('--replay', action='store_true',
-                        help='activate memory replay (according to Anna\'s definition: just sample the latest experiences?')
+    parser.add_argument('--no_replay', action='store_true',
+                        help='dont activate replay')
     parser.add_argument('--C', type=int, default=10,
                         help='how many times to save the target network')
+    parser.add_argument('--save_amt', type=int, default=10,
+                        help='save the weights to file')
+                        
     args = parser.parse_args()
     main(args)
