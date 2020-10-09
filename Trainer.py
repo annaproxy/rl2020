@@ -45,7 +45,7 @@ class Trainer:
         self.policy = EpsilonGreedyPolicy(self.model, self.epsilon, self.env.action_space.n, args.epsilon_cap)
 
         # Init memory
-        self.memory = ReplayMemory(args.memory)
+        self.memory = ReplayMemory(args.memory, args.replay)
 
     def train(self, num_episodes):
 

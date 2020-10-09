@@ -59,5 +59,7 @@ if __name__ == "__main__":
                         help='maximum steps per episode')
     parser.add_argument('--target', action='store_true',
                         help='activate target network')
+    parser.add_argument('--replay', action='store_true',
+                        help='activate memory replay (according to Anna\'s definition: just sample the latest experiences?')
     args = parser.parse_args()
     main(args)
