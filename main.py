@@ -28,8 +28,11 @@ def main(args):
     np.save(f'{experiment_directory}/ep_durations', duration)
 
     # plot results
-    plt.plot(smooth(duration,10))
+    plt.figure(figsize=(20, 10))
+    plt.plot(smooth(duration, 10))
+    plt.ylabel('Steps')
     plt.xlabel('Episodes')
+    plt.title(f'{args.env}')
     plt.savefig(f'{experiment_directory}/results.png')
     plt.show()
 
