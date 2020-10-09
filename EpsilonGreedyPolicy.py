@@ -1,6 +1,7 @@
 import torch
 import numpy as np
 import random
+device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
 
 
 class EpsilonGreedyPolicy(object):
@@ -20,7 +21,7 @@ class EpsilonGreedyPolicy(object):
 
         if policy_choice == 'greedy':
             with torch.no_grad():
-                logits = self.Q(torch.tensor(obs).float())
+                logits = self.Q(torch.tensor(obs).float().to(device))
                 action = torch.argmax(logits).item()
         elif policy_choice == 'non-greedy':
             action = random.choice(list(range(self.action_space)))
