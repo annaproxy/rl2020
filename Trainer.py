@@ -4,6 +4,7 @@ from dqn import QNetwork
 from EpsilonGreedyPolicy import EpsilonGreedyPolicy
 from MemoryReplay import ReplayMemory
 import torch.nn.functional as F
+device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
 
 
 class Trainer:
@@ -22,16 +23,16 @@ class Trainer:
 
         # get input and output size from env
         self.env.reset()
-        input_size = len(self.env.state)
+        input_size = len(self.env.env.state)
         output_size = self.env.action_space.n
 
         # Init  model
-        self.model = QNetwork(input_size, output_size, args.hidden)
+        self.model = QNetwork(input_size, output_size, args.hidden).to(device)
 
         # Init target model if desired
         self.use_target_net = args.target
         if args.target:
-            self.target_net = QNetwork(input_size, output_size, args.hidden)
+            self.target_net = QNetwork(input_size, output_size, args.hidden).to(device)
             self.target_net.load_state_dict(self.model.state_dict())
         else:
             self.target_net = self.model
@@ -44,9 +45,9 @@ class Trainer:
         self.policy = EpsilonGreedyPolicy(self.model, self.epsilon, self.env.action_space.n, args.epsilon_cap)
 
         # Init memory
-        self.memory = ReplayMemory(args.memory)
+        self.memory = ReplayMemory(args.memory, args.replay)
 
-    def train(self, num_episodes):
+    def train(self, num_episodes, C):
 
         global_steps = 0  # Count the steps (do not reset at episode start, to compute epsilon)
         episode_durations = []  #
@@ -79,7 +80,7 @@ class Trainer:
                     break
 
             # update target net if used
-            if i % 10 == 0 and self.use_target_net:
+            if i % C == 0 and self.use_target_net:
                 self.target_net.load_state_dict(self.model.state_dict())
         return episode_durations
 
@@ -95,11 +96,11 @@ class Trainer:
         state, action, reward, next_state, done = zip(*transitions)
 
         # convert to PyTorch and define types
-        state = torch.tensor(state, dtype=torch.float)
-        action = torch.tensor(action, dtype=torch.int64)[:, None]  # Need 64 bit to use them as index
-        next_state = torch.tensor(next_state, dtype=torch.float)
-        reward = torch.tensor(reward, dtype=torch.float)[:, None]
-        done = torch.tensor(done, dtype=torch.uint8)[:, None]  # Boolean
+        state = torch.tensor(state, dtype=torch.float).to(device)
+        action = torch.tensor(action, dtype=torch.int64)[:, None].to(device)  # Need 64 bit to use them as index
+        next_state = torch.tensor(next_state, dtype=torch.float).to(device)
+        reward = torch.tensor(reward, dtype=torch.float)[:, None].to(device)
+        done = torch.tensor(done, dtype=torch.uint8)[:, None].to(device)  # Boolean
 
         # compute the q value
         q_val = self._compute_q_vals(state, action)
