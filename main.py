@@ -14,11 +14,6 @@ def main(args):
     trainer = Trainer(args)
 
     duration = trainer.train(args.episodes)
-    f = open('Acrobot_output.txt','w+')
-    for dur in duration:
-        f.write(str(dur) + "\n")
-    f.close()
-
     print(duration)
 
 
@@ -32,8 +27,6 @@ if __name__ == "__main__":
                       help='Specify hidden size')
     parser.add_argument('--memory', type=int, default=10000,
                       help='Specify memory size for experience replay')
-    parser.add_argument('--replay', type=bool, default=True,
-                      help='Toggles experience replay')
     parser.add_argument('--env', type=str, choices=['MountainCar-v0', 'MountainCarContinuous-v0', 'CartPole-v1','Acrobot-v1'],
                         default='MountainCar-v0', help='Specify gym environment')
     parser.add_argument('--seed', type=int, default=42,
