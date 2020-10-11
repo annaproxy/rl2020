@@ -17,8 +17,8 @@ class QNetwork(nn.Module):
         out = F.relu(out)
         out = self.l2(out)
         out = F.relu(out)
-        out = self.l3(x)
+        out = self.l3(out)
         out = F.relu(out)
-        out = self.l4(x)
+        out = self.l4(out)
 
         return out
