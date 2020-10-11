@@ -78,6 +78,8 @@ if __name__ == "__main__":
                         help='how many times to save the target network')
     parser.add_argument('--save_amt', type=int, default=10,
                         help='save the weights to file')
+    parser.add_argument('--num_layers', type=int, default=0,
+                        help='set number of hidden layers')
                         
     args = parser.parse_args()
     main(args)

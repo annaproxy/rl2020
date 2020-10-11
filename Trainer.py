@@ -29,12 +29,12 @@ class Trainer:
         output_size = self.env.action_space.n
 
         # Init  model
-        self.model = QNetwork(input_size, output_size, args.hidden).to(device)
+        self.model = QNetwork(input_size, output_size, args.hidden, num_layers=args.num_layers).to(device)
 
         # Init target model if desired
         self.use_target_net = args.target
         if args.target:
-            self.target_net = QNetwork(input_size, output_size, args.hidden).to(device)
+            self.target_net = QNetwork(input_size, output_size, args.hidden, num_layers=args.num_layers).to(device)
             self.target_net.load_state_dict(self.model.state_dict())
         else:
             self.target_net = self.model
