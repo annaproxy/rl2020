@@ -15,14 +15,14 @@ def main(args):
     random.seed(args.seed)
     np.random.seed(args.seed)
 
-    # Print the setup for the record
-    print('-----------------------\nUsed hyperparameter setup:')
-    print(f'{vars(args)}\n-----------------------')
-
     # Initiate NO REPLAY mode 
     if args.no_replay:
         args.batch_size = 1
         args.memory = 1
+
+    # Print the setup for the record
+    print('-----------------------\nUsed hyperparameter setup:')
+    print(f'{vars(args)}\n-----------------------')
 
     args.experiment_directory = f'experiments/{json.dumps(vars(args))[1:-1]}'
     args.experiment_directory = args.experiment_directory.replace('"','')
