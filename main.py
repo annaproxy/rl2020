@@ -20,9 +20,10 @@ def main(args):
         args.batch_size = 1
         args.memory = 1
 
-    args.experiment_directory = f'experiments/{json.dumps(vars(args))[1:-1]}'
+    experiment_directory = f'experiments/{json.dumps(vars(args))[1:-1]}'
     experiment_directory = experiment_directory.replace('"','')
     experiment_directory = experiment_directory.replace(': ','_')
+    args.experiment_directory = experiment_directory
     os.makedirs(args.experiment_directory,
                 exist_ok=True)
     os.makedirs(args.experiment_directory+'/models/',

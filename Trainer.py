@@ -24,8 +24,8 @@ class Trainer:
         # get input and output size from env
         self.env.reset()
         input_size = len(self.env.env.state)
-        #if(args.env == 'Acrobot-v1'):
-        #    input_size = len(x)
+        if(args.env == 'Acrobot-v1'):
+           input_size = 6
         output_size = self.env.action_space.n
 
         # Init  model
