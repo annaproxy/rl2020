@@ -27,11 +27,33 @@ In this section you will find an overview of schedules, agreements and TO-DOs
 
 ### Usage:
 ```
-  main.py [-h] [--hidden HIDDEN] [--memory MEMORY]
+python main.py [-h] [--hidden HIDDEN] [--memory MEMORY]
                [--env {MountainCar-v0,MountainCarContinuous-v0,CartPole-v1,Acrobot-v1}]
                [--seed SEED] [--lr LR] [--epsilon EPSILON]
                [--discount DISCOUNT] [--batch_size BATCH_SIZE]
                [--episodes EPISODES] [--epsilon_cap EPSILON_CAP]
                [--max_steps MAX_STEPS] [--target] [--no_replay] [--C C]
                [--save_amt SAVE_AMT]
+```
+
+```
+  --hidden HIDDEN       Specify hidden size
+  --memory MEMORY       Specify memory size for experience replay
+  --env {MountainCar-v0,MountainCarContinuous-v0,CartPole-v1,Acrobot-v1}
+                        Specify gym environment
+  --seed SEED           Random seed
+  --lr LR               Learn rate
+  --epsilon EPSILON     epsilon for eps-greedy
+  --discount DISCOUNT   discount factor
+  --batch_size BATCH_SIZE
+                        batch size
+  --episodes EPISODES   batch size
+  --epsilon_cap EPSILON_CAP
+                        threhold for epsilon reduction
+  --max_steps MAX_STEPS
+                        maximum steps per episode
+  --target              activate target network
+  --no_replay           dont activate replay
+  --C C                 how many times to save the target network
+  --save_amt SAVE_AMT   save the weights to file
 ```
