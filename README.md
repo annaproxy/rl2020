@@ -24,3 +24,14 @@ In this section you will find an overview of schedules, agreements and TO-DOs
     * [ ] Combine experience replay with target networks
 * [ ] Make sure we write up a good first draft so we get proper feedback 
 
+
+### Usage:
+```
+  main.py [-h] [--hidden HIDDEN] [--memory MEMORY]
+               [--env {MountainCar-v0,MountainCarContinuous-v0,CartPole-v1,Acrobot-v1}]
+               [--seed SEED] [--lr LR] [--epsilon EPSILON]
+               [--discount DISCOUNT] [--batch_size BATCH_SIZE]
+               [--episodes EPISODES] [--epsilon_cap EPSILON_CAP]
+               [--max_steps MAX_STEPS] [--target] [--no_replay] [--C C]
+               [--save_amt SAVE_AMT]
+```
