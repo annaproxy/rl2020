@@ -52,7 +52,7 @@ class EverythingPlotter:
             + str(discount)
             + ", batch_size_{batch_size}, episodes_"
             + str(episodes)
-            + ", epsilon_cap_1000, max_steps_"
+            + ", epsilon_cap_4000, max_steps_"
             + str(max_steps)
             + ", target_{target}, no_replay_{no_replay}, C_"
             + str(C)
@@ -127,7 +127,7 @@ class EverythingPlotter:
         for memory in [1, 10000]:
             for batch_size in [1, 64]:
                 for target in ["true", "false"]:
-                    if memory == 1 and batch_size == 64:
+                    if (memory == 1 and batch_size == 64) or (memory == 10000 and batch_size == 1):
                         continue
                     if memory == 1 and batch_size == 1:
                         no_replay = "true"
@@ -142,6 +142,7 @@ class EverythingPlotter:
                             no_replay=no_replay,
                             target=target,
                         )
+
                         final_filename = (
                             f"{self.experiment_dir}/{filename}/ep_durations.npy"
                         )
@@ -179,14 +180,17 @@ class EverythingPlotter:
         scores_dict = self._get_scores_dict()
 
         sns.set_style("darkgrid")
-        fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(8.5, 3))
+
+        fig, (ax1, ax3) = plt.subplots(1, 2, figsize=(6 * 2, 6)) # ax2 taken out
+
         colors = sns.color_palette("Set1", 6)
         colors = list(colors.as_hex())
         for i, z in enumerate(scores_dict):
+
             if z[0] == 1 and z[1] == 1:
                 ax = ax1
-            elif z[1] == 1:
-                ax = ax2
+            # elif z[1] == 1:
+            #     ax = ax2
             else:
                 ax = ax3
             the_means = np.mean(scores_dict[z], axis=0)
@@ -203,13 +207,15 @@ class EverythingPlotter:
                 color=colors[i],
                 alpha=0.2,
             )
-        for ax in [ax1, ax2, ax3]:
+        for ax in [ax1, ax3]:  # ax2 taken out
             ax.legend()
             ax.set_ylim(0, self.max_steps)
-        ax1.set_title("a) No replay")
-        ax2.set_title("b) Replay, batch size=1")
-        ax3.set_title("c) Replay, batch size=64")
-        plt.savefig(f"{filename}.pdf", bbox_inches ='tight')
+
+        ax1.set_title("No replay")
+        # ax2.set_title("Replay, Batch size = 1")
+        ax3.set_title("Replay, Batch size = 64")
+        plt.savefig(f"{filename}.pdf")
+
 
 
 if __name__ == "__main__":
