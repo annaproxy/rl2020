@@ -179,7 +179,7 @@ class EverythingPlotter:
         scores_dict = self._get_scores_dict()
 
         sns.set_style("darkgrid")
-        fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(6 * 3, 6))
+        fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(8.5, 3))
         colors = sns.color_palette("Set1", 6)
         colors = list(colors.as_hex())
         for i, z in enumerate(scores_dict):
@@ -206,13 +206,13 @@ class EverythingPlotter:
         for ax in [ax1, ax2, ax3]:
             ax.legend()
             ax.set_ylim(0, self.max_steps)
-        ax1.set_title("No replay")
-        ax2.set_title("Replay, Batch size = 1")
-        ax3.set_title("Replay, Batch size = 64")
-        plt.savefig(f"{filename}.pdf")
+        ax1.set_title("a) No replay")
+        ax2.set_title("b) Replay, batch size=1")
+        ax3.set_title("c) Replay, batch size=64")
+        plt.savefig(f"{filename}.pdf", bbox_inches ='tight')
 
 
 if __name__ == "__main__":
     e = EverythingPlotter(experiment_dir="lisa")
-    e.plot_weights(filename="thick_weights")
+    #e.plot_weights(filename="thick_weights")
     e.plot_replay_variations(filename="cartpole-test")
