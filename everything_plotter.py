@@ -190,7 +190,7 @@ class EverythingPlotter:
                     p1 = np.mean(scores_dict[z1], axis=1)
                     p2 = np.mean(scores_dict[z2], axis=1)
                     test = ttest_ind(p1, p2, equal_var=False)
-                    the_pvalue = test.pvalue
+                    the_pvalue = test.pvalue * 15
                     print(
                         self.get_descriptive_tuple(z1),
                         "versus",
