@@ -112,6 +112,15 @@ class EverythingPlotter:
                     weights_dict[(memory, batch_size, target)] = episodes
         return weights_dict
 
+    def get_readable_tuple(self, tuple):
+        return str(
+            (
+                "yes" if tuple[0] == 10000 else "no",
+                "yes" if tuple[2] == "true" else "no",
+                tuple[1],
+            )
+        )
+
     def get_descriptive_tuple(self, tuple):
         # (memory, batch_size, target)
         part1 = (
@@ -173,31 +182,61 @@ class EverythingPlotter:
 
             plt.savefig(f"{filename}_seed{seed}.pdf")
 
-    def plot_replay_variations(self, smoothing=500, filename="cartpole"):
+    def plot_replay_variations(
+        self, smoothing=500, filename="cartpole", ttest="between"
+    ):
         """
         Plots all replay variations (when applicable)
+        smoothing: Smooths all plots (large value recommended)
+        filename: where to save the pdf
+        ttest: [between|self], reports t-statistics
         """
         scores_dict = self._get_scores_dict()
-
+        p_value_matrix = np.zeros((len(scores_dict.keys()), len(scores_dict.keys())))
         sns.set_style("darkgrid")
         fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(8.5, 2.5))
         colors = sns.color_palette("Set1", 6)
         colors = list(colors.as_hex())
 
         for i, z1 in enumerate(scores_dict):
-            for j, z2 in enumerate(scores_dict):
-                if i > j:
-                    p1 = np.mean(scores_dict[z1], axis=1)
-                    p2 = np.mean(scores_dict[z2], axis=1)
-                    test = ttest_ind(p1, p2, equal_var=False)
-                    the_pvalue = test.pvalue
-                    print(
-                        self.get_descriptive_tuple(z1),
-                        "versus",
-                        self.get_descriptive_tuple(z2),
+            if ttest == "self":
+                p = np.sort(np.mean(scores_dict[z1], axis=1))
+                if len(p) & 1:
+                    warnings.warn(
+                        "You are doing a t-test within the model, but provided an odd number of seeds."
                     )
-                    print(the_pvalue)
-                    print("===")
+                half = int(len(p) / 2)
+                p1 = p[:half]
+                p2 = p[half:]
+                test = ttest_ind(p1, p2, equal_var=True)
+                the_pvalue = test.pvalue
+                print("Between self", self.get_descriptive_tuple(z1), the_pvalue)
+            elif ttest == "between":
+
+                for j, z2 in enumerate(scores_dict):
+                    if i > j:
+                        p1 = np.mean(scores_dict[z1][:, :], axis=1)
+                        p2 = np.mean(scores_dict[z2][:, :], axis=1)
+                        test = ttest_ind(p1, p2, equal_var=False)
+                        the_pvalue = test.pvalue
+                        p_value_matrix[i, j] = the_pvalue
+                        print(
+                            self.get_descriptive_tuple(z1),
+                            "versus",
+                            self.get_descriptive_tuple(z2),
+                        )
+                        print(the_pvalue)
+                        print("===")
+        if ttest == "between":
+            print(p_value_matrix)
+            print(" & ".join([self.get_readable_tuple(z) for z in scores_dict]))
+            for row, key in zip(p_value_matrix, scores_dict.keys()):
+                print(
+                    self.get_readable_tuple(key),
+                    "&",
+                    " & ".join([str(round(z, 4)) if z > 0 else "-" for z in row]),
+                    "\\\\",
+                )
 
         for i, z in enumerate(scores_dict):
             if z[0] == 1 and z[1] == 1:
@@ -235,4 +274,4 @@ if __name__ == "__main__":
         experiment_dir="lisa", seed_list=[1, 2, 11, 12, 21, 22, 31, 32, 41, 42]
     )
     # e.plot_weights(filename="thick_weights-moreseeds")
-    e.plot_replay_variations(filename="cartpole-moreseeds")
+    e.plot_replay_variations(filename="cartpole-moreseeds", ttest="between")
