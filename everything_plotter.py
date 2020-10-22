@@ -181,7 +181,7 @@ class EverythingPlotter:
 
         sns.set_style("darkgrid")
 
-        fig, (ax1, ax3) = plt.subplots(1, 2, figsize=(6 * 2, 6)) # ax2 taken out
+        fig, (ax1, ax3) = plt.subplots(1, 2, figsize=(8.5, 3)) # ax2 taken out
 
         colors = sns.color_palette("Set1", 6)
         colors = list(colors.as_hex())
@@ -214,7 +214,7 @@ class EverythingPlotter:
         ax1.set_title("No replay")
         # ax2.set_title("Replay, Batch size = 1")
         ax3.set_title("Replay, Batch size = 64")
-        plt.savefig(f"{filename}.pdf")
+        plt.savefig(f"{filename}.pdf", bbox_inches ='tight')
 
 
 
