@@ -9,6 +9,7 @@ import random
 from matplotlib.colors import ListedColormap
 import seaborn as sns
 from utils import smooth
+from scipy.stats import ttest_rel, ttest_ind
 
 
 class EverythingPlotter:
@@ -167,7 +168,7 @@ class EverythingPlotter:
             for ax, z in zip(axs.flat, weights_dict):
                 for w in weights_dict[z].T:
                     w_s = smooth(w, smoothing)
-                    ax.plot(np.arange(0, len(w_s)), w_s)
+                    ax.plot(np.arange(0, len(w_s) * self.save_amt, self.save_amt), w_s)
                     ax.set_title(self.get_descriptive_tuple(z))
 
             plt.savefig(f"{filename}_seed{seed}.pdf")
@@ -179,9 +180,25 @@ class EverythingPlotter:
         scores_dict = self._get_scores_dict()
 
         sns.set_style("darkgrid")
-        fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(8.5, 3))
+        fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(8.5, 2.5))
         colors = sns.color_palette("Set1", 6)
         colors = list(colors.as_hex())
+
+        for i, z1 in enumerate(scores_dict):
+            for j, z2 in enumerate(scores_dict):
+                if i > j:
+                    p1 = np.mean(scores_dict[z1], axis=1)
+                    p2 = np.mean(scores_dict[z2], axis=1)
+                    test = ttest_ind(p1, p2, equal_var=False)
+                    the_pvalue = test.pvalue
+                    print(
+                        self.get_descriptive_tuple(z1),
+                        "versus",
+                        self.get_descriptive_tuple(z2),
+                    )
+                    print(the_pvalue)
+                    print("===")
+
         for i, z in enumerate(scores_dict):
             if z[0] == 1 and z[1] == 1:
                 ax = ax1
@@ -206,13 +223,16 @@ class EverythingPlotter:
         for ax in [ax1, ax2, ax3]:
             ax.legend()
             ax.set_ylim(0, self.max_steps)
+            ax.set_xlim(0, self.episodes)
         ax1.set_title("a) No replay")
         ax2.set_title("b) Replay, batch size=1")
         ax3.set_title("c) Replay, batch size=64")
-        plt.savefig(f"{filename}.pdf", bbox_inches ='tight')
+        plt.savefig(f"{filename}.pdf", bbox_inches="tight")
 
 
 if __name__ == "__main__":
-    e = EverythingPlotter(experiment_dir="lisa")
-    #e.plot_weights(filename="thick_weights")
-    e.plot_replay_variations(filename="cartpole-test")
+    e = EverythingPlotter(
+        experiment_dir="lisa", seed_list=[1, 2, 11, 12, 21, 22, 31, 32, 41, 42]
+    )
+    # e.plot_weights(filename="thick_weights-moreseeds")
+    e.plot_replay_variations(filename="cartpole-moreseeds")
