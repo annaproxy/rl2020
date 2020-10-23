@@ -2,6 +2,12 @@
 
 Welcome to the Raging Lunatics repository for the reproducible research assignment for the course Reinforcement Learning at the University of Amsterdam, by Anna Langedijk, Christiaan van der Vlist, David Černy and Albert Harkema. Here you will find the most recent codebase, progress and schedules.
 
+
+
+# DQN vs MountainCar
+
+![Alt Text](https://github.com/annaproxy/rl2020/blob/master/mtc.gif)
+
 ## Schedules
 
 In this section you will find an overview of schedules, agreements and TO-DOs
