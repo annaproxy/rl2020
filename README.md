@@ -1,11 +1,13 @@
 # On the Verge of Divergence
 ## Reinforcement Learning 2020
 
-Welcome to therepository for the reproducible research assignment for the course Reinforcement Learning at the University of Amsterdam, by Anna Langedijk, Christiaan van der Vlist, David Černy and Albert Harkema. Here you will find the most recent codebase, progress and schedules.
+Welcome to therepository for the reproducible research assignment for the course Reinforcement Learning at the University of Amsterdam, by Anna Langedijk, Christiaan van der Vlist, David Černy and Albert Harkema. Here you will find the most recent codebase for the assignment.
 
 
 
 # DQN vs MountainCar
+
+Below we have attached a small clip showing a resulting MountainCar run of one of our converged Deep Q-Networks which has learned to solve the MountainCar environment.
 
 ![Alt Text](https://github.com/annaproxy/rl2020/blob/master/mtc.gif)
 
